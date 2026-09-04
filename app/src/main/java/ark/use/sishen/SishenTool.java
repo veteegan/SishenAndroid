@@ -59,7 +59,7 @@ public class SishenTool extends Activity
     static long timeHideIcon = 1000;
     static long timeKillIcon = 5000;
 
-    static boolean ShowingMenu = false;
+    static boolean ShowingMenu = true;
 
     static native String Icon();
 
@@ -67,29 +67,22 @@ public class SishenTool extends Activity
 
     public static native void SaveConfig();
 
-    private GiveKey giveKey;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GiveKey giveKey = new GiveKey(this);
-        giveKey.genAndSendKeyToCpp();
-        giveKey.fetchUrlFromCpp();
         if (!Settings.canDrawOverlays(this)) {
             //startActivityForResult(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())), 0);
         }
-        //Start(this);
         StartWithIcon(this);
-    }
-    public GiveKey getGiveKey() {
-        return giveKey;
     }
 
     public static void StartWithIcon(Context context) {
         if (context instanceof Activity) {
             //Check if context is an Activity.
+            ShowingMenu = true;
             Menu(context);
             SetWindowManagerActivity();
+            ShowMenuImgui();
         }
     }
     @SuppressLint("SuspiciousIndentation")
@@ -120,7 +113,7 @@ public class SishenTool extends Activity
         rootFrame.setOnTouchListener(onTouchListener());
         mRootContainer = new RelativeLayout(context); // Markup on which two markups of the icon and the menu itself will be placed
         mCollapsed = new RelativeLayout(context); // Markup of the icon (when the menu is minimized)
-        mCollapsed.setVisibility(View.VISIBLE);
+        mCollapsed.setVisibility(View.GONE);
         mCollapsed.setAlpha(ICON_ALPHA);
 
         //********** The icon to open mod menu **********

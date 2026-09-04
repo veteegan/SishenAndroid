@@ -43,6 +43,7 @@ target_compile_options( fmt_lib PRIVATE
 
 add_library( Sishen SHARED
         Setup.cpp
+        Source/Icon.cpp
         Source/Menu.cpp
         Source/Main.cpp
         Source/UnrealEngine/ScriptCore.cpp
@@ -69,10 +70,6 @@ add_library( Sishen SHARED
         ELF64/fix.cpp
 )
 
-set(HIKARI_PLUGIN
-        "${ANDROID_NDK}/toolchains/llvm/prebuilt/darwin-x86_64/lib/libHikari.so" # set path
-)
-
 target_compile_options(Sishen PRIVATE
         # C & C++
         -w
@@ -89,15 +86,6 @@ target_compile_options(Sishen PRIVATE
         -Wno-error=c++11-narrowing
         -Wall
         >
-
-        # Obf
-        -fvisibility=hidden
-        -fpass-plugin=${HIKARI_PLUGIN}
-        -Xclang
-        -load
-        -Xclang=${HIKARI_PLUGIN}
-        -mllvm
-        -enable-strcry
 )
 
 target_link_libraries( Sishen PRIVATE

@@ -6,8 +6,7 @@ android {
     namespace 'ark.use.sishen'
     compileSdkVersion 35
     def sdkDir = android.sdkDirectory
-    ndkVersion = "29.0.13113456"//27.0.12077973
-    ndkPath = "$sdkDir/ndk/29.0.13113456-obf"//27.0.12077973-obf
+    ndkVersion = "28.2.13676358"
     defaultConfig {
         applicationId "ark.use.sishen"
         minSdkVersion 24
@@ -18,24 +17,6 @@ android {
             abiFilters 'arm64-v8a'
         }
         signingConfig signingConfigs.debug
-
-        /* externalNativeBuild {
-            ndkBuild {
-
-                def ndkDir = android.ndkDirectory
-                def obfLib = "$ndkDir/toolchains/llvm/prebuilt/darwin-x86_64/lib/libHikari.so"
-
-                cFlags  "-fvisibility=hidden",
-                        "-fpass-plugin=${obfLib}",
-                        "-Xclang", "-load", "-Xclang=${obfLib}"
-                cppFlags "-fvisibility=hidden",
-                        "-fpass-plugin=${obfLib}",
-                        "-Xclang", "-load", "-Xclang=${obfLib}"
-
-                cppFlags "-mllvm", "-enable-strcry"
-            }
-        } */
-
     }
 
     buildTypes {
@@ -51,12 +32,13 @@ android {
         }
     }
     externalNativeBuild {
-        ndkBuild {
-            path file('src/main/cpp/Android.mk')
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
         }
     }
     namespace 'ark.use.sishen'
-    buildToolsVersion '35.0.0'
+    buildToolsVersion '36.0.0'
 
 }
 

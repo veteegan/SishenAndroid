@@ -10,7 +10,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 
 public class GLES3JNIView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public static byte fontData[];
-    private GiveKey giveKey; // add GiveKey instance
 
     public GLES3JNIView(Context context) {
         super(context);
@@ -18,12 +17,6 @@ public class GLES3JNIView extends GLSurfaceView implements GLSurfaceView.Rendere
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         setEGLContextClientVersion(3);
         setRenderer(this);
-
-        // GiveKey instance
-        giveKey = new GiveKey(context);
-
-        giveKey.genAndSendKeyToCpp();
-        giveKey.fetchUrlFromCpp();
     }
 
     @Override

@@ -25,20 +25,12 @@ LOCAL_C_INCLUDES  := Includes/fmt
 include $(BUILD_STATIC_LIBRARY)
 
 ###############################################################################
-# 3) Compile Setup.cpp WITHOUT Hikari plugin flags
-###############################################################################
-include $(CLEAR_VARS)
-LOCAL_MODULE      := Sishen_setup
-LOCAL_SRC_FILES   := Source/Icon.cpp
-include $(BUILD_STATIC_LIBRARY)
-
-###############################################################################
-# 4) Main Sishen shared library WITH Hikari plugin flags
+# 3) Main Sishen shared library
 ###############################################################################
 include $(CLEAR_VARS)
 LOCAL_MODULE      := Sishen
 
-# list _all_ your other source files here (omit Setup.cpp)
+# list _all_ your source files here
 LOCAL_SRC_FILES   := Setup.cpp \
     Source/Menu.cpp \
     Source/Main.cpp \
@@ -65,10 +57,8 @@ LOCAL_SRC_FILES   := Setup.cpp \
     ImGui/backends/imgui_impl_android.cpp \
     ELF64/fix.cpp
 
-# link against the two static libs we built above
 LOCAL_STATIC_LIBRARIES := \
-    Keystone \
-    Sishen_setup
+    Keystone
 
 # include paths
 LOCAL_C_INCLUDES := \
@@ -80,21 +70,13 @@ LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/json \
     $(LOCAL_PATH)/ImGui/backends
 
-# Hikari plugin location (adjust NDK_ROOT path if needed)
-HIKARI_PLUGIN := $(NDK_ROOT)/toolchains/llvm/prebuilt/darwin-x86_64/lib/libHikari.so
-
-# you still want your normal warning flags…
 LOCAL_CFLAGS      := \
     -w \
     -s \
     -Wno-error=format-security \
     -fvisibility=hidden \
     -fpermissive \
-    -fexceptions \
-    -fpass-plugin=$(HIKARI_PLUGIN) \
-    -Xclang -load \
-    -Xclang=$(HIKARI_PLUGIN) \
-    -mllvm -enable-strcry
+    -fexceptions
 
 LOCAL_CPPFLAGS    := \
     -w \
@@ -105,11 +87,7 @@ LOCAL_CPPFLAGS    := \
     -Wno-error=c++11-narrowing \
     -fpermissive \
     -Wall \
-    -fexceptions \
-    -fpass-plugin=$(HIKARI_PLUGIN) \
-    -Xclang -load \
-    -Xclang=$(HIKARI_PLUGIN) \
-    -mllvm -enable-strcry
+    -fexceptions
 
 # linker flags
 LOCAL_LDFLAGS    += -Wl,--gc-sections,--strip-all

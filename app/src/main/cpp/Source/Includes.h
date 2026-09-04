@@ -13,10 +13,11 @@
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 
-#include <android/native_window_jni.h>
 #include <json.hpp>
 #include "obfuscate.h"
-#include "speck.h"
+#ifndef SPECK_OBFUSCATE
+#define SPECK_OBFUSCATE(x) OBFUSCATE(x)
+#endif
 
 typedef int8_t int8;
 typedef int16_t int16;
@@ -55,11 +56,10 @@ inline int ScreenHeight = 0;
 
 inline JNIEnv* global_env = nullptr;
 inline jobject globalContext;
-inline jobject globalGiveKey;
 
 inline ImGuiWindow* g_window = nullptr;
 inline bool g_Initialized = false;
-inline bool ShowMenu = false;
+inline bool ShowMenu = true;
 inline bool CanCloseMenu = false;
 
 inline ANativeWindow* g_NativeWindow = nullptr;

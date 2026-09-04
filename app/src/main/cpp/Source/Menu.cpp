@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Menu.h"
-#include "Login.h"
 #include "Clipboard.h"
 #include <jni.h>
 #include "Includes.h"
@@ -302,10 +301,10 @@ void CalculateOptimalMenuSize(float screenWidth, float screenHeight, float& winW
 //==========================================================================================================
 void DrawMenu()
 {
-    ImGui::SetNextWindowPos(ImVec2(ScreenWidth * 0.5f, ScreenHeight * 0.5f),ImGuiCond_Once);
-    ImGui::SetNextWindowSize({ScreenWidth * 0.4f, ScreenHeight * 0.7f}, ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(ScreenWidth * 0.5f, ScreenHeight * 0.5f), ImGuiCond_Once, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(ScreenWidth * 0.4f, ScreenHeight * 0.7f), ImGuiCond_Once);
 
-    ImGui::SetNextWindowCollapsed(true, ImGuiCond_::ImGuiCond_Once);
+    ImGui::SetNextWindowCollapsed(false, ImGuiCond_Once);
     ImGui::Begin("SishenTool", &ShowMenu, ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoCollapse);
     g_window = ImGui::GetCurrentWindow();
 
