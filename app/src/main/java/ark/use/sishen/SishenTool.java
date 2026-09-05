@@ -70,6 +70,7 @@ public class SishenTool extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
         if (!Settings.canDrawOverlays(this)) {
             //startActivityForResult(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())), 0);
         }
@@ -371,10 +372,15 @@ public class SishenTool extends Activity
     static void SetFontData(String fontname)
     {
         try {
-            //InputStream in =getAssets().open("OpenSans-Bold.ttf");
-            InputStream in =getContext.getAssets().open(fontname);
-            GLES3JNIView.fontData = new byte[in.available()];
-            in.read(GLES3JNIView.fontData);
+            InputStream in = getContext.getAssets().open(fontname);
+            java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            GLES3JNIView.fontData = out.toByteArray();
         } catch (Exception e) {}
     }
 }

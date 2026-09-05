@@ -301,10 +301,17 @@ void CalculateOptimalMenuSize(float screenWidth, float screenHeight, float& winW
 //==========================================================================================================
 void DrawMenu()
 {
-    ImGui::SetNextWindowPos(ImVec2(ScreenWidth * 0.5f, ScreenHeight * 0.5f), ImGuiCond_Once, ImVec2(0.5f, 0.5f));
-    ImGui::SetNextWindowSize(ImVec2(ScreenWidth * 0.4f, ScreenHeight * 0.7f), ImGuiCond_Once);
+    if (ScreenWidth <= 0 || ScreenHeight <= 0)
+        return;
 
-    ImGui::SetNextWindowCollapsed(false, ImGuiCond_Once);
+    float winWidth = 0.0f;
+    float winHeight = 0.0f;
+    CalculateOptimalMenuSize((float)ScreenWidth, (float)ScreenHeight, winWidth, winHeight);
+
+    ImGui::SetNextWindowPos(ImVec2(ScreenWidth * 0.5f, ScreenHeight * 0.5f), ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(winWidth, winHeight), ImGuiCond_FirstUseEver);
+
+    ImGui::SetNextWindowCollapsed(false, ImGuiCond_Always);
     ImGui::Begin("SishenTool", &ShowMenu, ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoCollapse);
     g_window = ImGui::GetCurrentWindow();
 

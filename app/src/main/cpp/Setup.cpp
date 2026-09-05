@@ -40,29 +40,30 @@ void GLES3JNIView_init(JNIEnv *env, jclass clazz /*, jobject surface*/) {
     style->WindowMinSize = ImVec2(400, 180);
 
     ImGuiIO *io = &ImGui::GetIO();
+    io->IniFilename = NULL;
     ImGui_ImplAndroid_Init(g_NativeWindow);
     ImGui_ImplOpenGL3_Init("#version 100");
 
     ImFontConfig font_cfg;
+    font_cfg.FontDataOwnedByAtlas = false;
 
     SetDataFont(env, "tahomabd.ttf");
     jfieldID Id = env->GetStaticFieldID(clazz,"fontData", "[B");
     jbyteArray byteArray = (jbyteArray)env->GetStaticObjectField(clazz,Id);
-    jbyte* fontData = env->GetByteArrayElements(byteArray,NULL);
-    int fontDataSize= env->GetArrayLength(byteArray);
-    //io->Fonts->AddFontFromMemoryTTF(fontData, fontDataSize, 25.0f, &font_cfg, io->Fonts->GetGlyphRangesJapanese());
-
-    /*io->Fonts->AddFontFromMemoryTTF(fontData, fontDataSize, 38.0f, &font_cfg, io->Fonts->GetGlyphRangesChineseFull());*/
-
-    io->Fonts->AddFontFromMemoryTTF(fontData, fontDataSize, 38.0f, &font_cfg, io->Fonts->GetGlyphRangesThai());
-
-    //io->Fonts->AddFontFromMemoryTTF(fontData, fontDataSize, 25.0f, &font_cfg, io->Fonts->GetGlyphRangesGreek());
-
-    //io->Fonts->AddFontFromMemoryTTF(fontData, fontDataSize, 25.0f, &font_cfg, io->Fonts->GetGlyphRangesCyrillic());
-    //IM_ASSERT(font != NULL);
+    if (byteArray != nullptr) {
+        jbyte* fontData = env->GetByteArrayElements(byteArray, NULL);
+        int fontDataSize = env->GetArrayLength(byteArray);
+        if (fontData != nullptr && fontDataSize > 0) {
+            io->Fonts->AddFontFromMemoryTTF(fontData, fontDataSize, 28.0f, &font_cfg, io->Fonts->GetGlyphRangesDefault());
+            env->ReleaseByteArrayElements(byteArray, fontData, JNI_ABORT);
+        } else {
+            io->Fonts->AddFontDefault();
+        }
+    } else {
+        io->Fonts->AddFontDefault();
+    }
 
     settings.Load();
-
 
     g_Initialized = true;
 }
@@ -73,7 +74,7 @@ void GLES3JNIView_resize(JNIEnv *env, jclass clazz, jint width, jint height) {
     glViewport(0, 0, width, height);
     ImGuiIO &io = ImGui::GetIO();
     io.ConfigWindowsMoveFromTitleBarOnly = true;
-    //io.IniFilename = NULL;
+    io.IniFilename = NULL;
     ImGui::GetIO().DisplaySize = ImVec2((float)width, (float)height);
 }
 
@@ -120,19 +121,17 @@ void CloseMenuImgui(JNIEnv *env)
 
 void GLES3JNIView_step(JNIEnv *env, jclass clazz)
 {
-    if (!g_Initialized)
+    if (!g_Initialized || ScreenWidth <= 0 || ScreenHeight <= 0)
         return;
 
     ImGuiIO& io = ImGui::GetIO();
     io.FontGlobalScale = 0.8f;
     global_env = env;
-    static bool show_MainMenu_window = true;
 
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplAndroid_NewFrame(ScreenWidth, ScreenHeight);
     ImGui::NewFrame();
-
 
     if (ShowMenu)
     {
@@ -144,17 +143,9 @@ void GLES3JNIView_step(JNIEnv *env, jclass clazz)
         CloseMenuImgui(env);
     }
 
-    /*if (show_MainMenu_window) {
-        // BeginDraw();
-        ImGui::Begin("Another Window", &show_MainMenu_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-        g_window = ImGui::GetCurrentWindow();
-        ImGui::Text("Hello from another window!");
-        if (ImGui::Button("Close Me"))
-            show_MainMenu_window = false;
-        ImGui::End();
-    }*/
-
     ImGui::Render();
+    glViewport(0, 0, ScreenWidth, ScreenHeight);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
